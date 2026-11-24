@@ -142,7 +142,8 @@ local KIND_LABEL = { flight = N"Flight master", zeppelin = N"Zeppelin", shipA = 
   leyline = N"Ley Line", convergence = N"Elemental Convergence", transition = N"Zone transition" }
 local KIND_HINT = { leyline = N"Read Leyline here: Attuned for 1 hour (100% regeneration).",
   convergence = N"Skysight here: Charged for 1 hour (30% movement speed)." }
-local function onEnter(pin)
+local function onEnter(pin, tt)
+  local GameTooltip = type(tt) == "table" and tt or GameTooltip -- OneForAll Pad: its own tooltip on OpenMap's controller view
   local e = pin.entry
   if not e or not GameTooltip then return end
   GameTooltip:SetOwner(pin, "ANCHOR_RIGHT")
@@ -245,6 +246,7 @@ function LM.Refresh()
   if not WorldMapFrame then return end
   hideAll()
   if not Q("mapLandmarks") or not WorldMapFrame:IsShown() then return end
+  if FLT.PadOwnsMap and FLT.PadOwnsMap() then return end -- OneForAll Pad: drawn on OpenMap's controller view instead (Pad/MapPad.lua)
   local mapID = WorldMapFrame.GetMapID and WorldMapFrame:GetMapID()
   if not mapID then return end
   if not byMap then buildIndex() end
@@ -313,6 +315,9 @@ function LM.BooksChanged()
 end
 
 LM._pool = pool -- for tools/tests/t_landmarks.lua
+-- OneForAll Pad (Pad/MapPad.lua): the index, the icons and the tooltip, read only
+function LM._PadIndex() if not byMap then buildIndex() end return byMap, KINDS end
+LM._PadTip = onEnter
 function LM._reset() byMap = nil end
 
 local ev = CreateFrame("Frame")

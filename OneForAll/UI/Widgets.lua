@@ -1542,3 +1542,16 @@ function UI.RegisterPanel(spec)
   UI.panels[#UI.panels + 1] = spec
   table.sort(UI.panels, function(a, b) return (a.order or 99) < (b.order or 99) end)
 end
+
+-- OneForAll Pad: the open dropdown or menu, for the controller (Pad/Pad.lua)
+function UI.PadOpenMenu()
+  for l = #cascade.menus, 1, -1 do
+    local m = cascade.menus[l]
+    if m and m:IsShown() then return m, l == 1 and cascade.owner or nil end
+  end
+  if ddMenu and ddMenu:IsShown() then return ddMenu, ddMenu.owner end
+end
+function UI.PadCloseMenus()
+  if ddMenu then ddMenu:Hide() end
+  for l = #cascade.menus, 1, -1 do if cascade.menus[l]:IsShown() then cascade.menus[l]:Hide(); if cascade.catcher then cascade.catcher:Hide() end; return end end
+end
