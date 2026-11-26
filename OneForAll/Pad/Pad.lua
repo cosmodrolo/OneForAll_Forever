@@ -29,7 +29,11 @@ local Pad = {}
 FLT.Pad = Pad
 
 local function Secret(v) return issecretvalue and issecretvalue(v) end
-local function Print(msg) DEFAULT_CHAT_FRAME:AddMessage("|cffffd100OneForAll Pad:|r " .. msg) end
+local function Print(msg)
+  -- (inside Untamed the Kit calls itself "Untamed Kit": FLT.DISPLAY_NAME)
+  local who = FLT.DISPLAY_NAME == "Untamed Kit" and "Untamed Kit" or "OneForAll Pad"
+  DEFAULT_CHAT_FRAME:AddMessage("|cffffd100" .. who .. ":|r " .. msg)
+end
 local function DB()
   if type(OneForAllDB) ~= "table" then return {} end
   OneForAllDB.pad = OneForAllDB.pad or {}
